@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>L'Apéro – Équipe ROUGE [build-30]</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rouge:#C0392B;--rouge-f:#922B21;--rouge-cl:#F5B7B1;--rouge-p:#FDEDEC;
+  --or:#D4AC0D;--vert:#1E8449;--vert-p:#EAFAF1;
+  --gris-f:#2C3E50;--gris-m:#566573;--gris-cl:#F2F3F4;
+  --blanc:#FFF;--texte:#1A1A2E;--ombre:rgba(0,0,0,0.15);
+  --r:16px;--rs:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Lato',sans-serif;background:linear-gradient(160deg,#1A1A2E 0%,#922B21 60%,#C0392B 100%);min-height:100vh;color:var(--texte);}
+
+header{background:rgba(0,0,0,0.45);padding:16px 20px 12px;text-align:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);border-bottom:2px solid rgba(212,172,13,0.5);}
+header h1{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;color:var(--or);letter-spacing:3px;text-shadow:2px 2px 8px rgba(0,0,0,0.5);line-height:1;}
+.badge-equipe{display:inline-block;margin-top:6px;background:var(--rouge);color:#fff;font-weight:700;font-size:0.85rem;letter-spacing:4px;padding:5px 20px;border-radius:30px;border:2px solid var(--rouge-cl);}
+
+.container{max-width:480px;margin:0 auto;padding:16px 14px 50px;}
+
+/* ── PROGRESSION ── */
+.card-prog{background:var(--blanc);border-radius:var(--r);padding:16px 18px 14px;margin-bottom:16px;box-shadow:0 4px 20px var(--ombre);}
+.prog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.prog-titre{font-weight:700;font-size:0.9rem;color:var(--gris-m);text-transform:uppercase;letter-spacing:1px;}
+.prog-score{font-weight:700;font-size:1rem;color:var(--rouge);}
+
+/* ── PASTILLES : grille fixe 1 rangée, taille auto ── */
+.pastilles{
+  display:grid;
+  /* 6 obligatoires + séparateur + 1 libre = 8 colonnes */
+  grid-template-columns: repeat(6,1fr) 4px 1fr;
+  gap:5px;
+  align-items:center;
+}
+.past{
+  /* s'adapte à la colonne, carré via aspect-ratio */
+  width:100%;aspect-ratio:1;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;
+  border:2px solid #ddd;background:var(--gris-cl);color:#bbb;
+  transition:box-shadow 0.2s;cursor:default;user-select:none;
+}
+.past.actif{background:var(--rouge);border-color:var(--rouge-f);color:#fff;cursor:pointer;animation:pulseR 1.8s infinite;}
+.past.fait {background:var(--vert); border-color:var(--vert); color:#fff;cursor:pointer;}
+.past.libre{background:var(--rouge);border-color:var(--rouge-f);color:#fff;cursor:pointer;animation:pulseR 1.8s infinite;}
+.past.libre-fait{background:var(--vert);border-color:var(--vert);color:#fff;cursor:pointer;}
+
+/* HALO uniquement sur la pastille dont la carte est affichée */
+.past.halo{box-shadow:0 0 0 3px #fff,0 0 0 6px rgba(255,255,255,0.6)!important;}
+/* Les pastilles non-halo n'ont AUCUN box-shadow résiduel */
+.past:not(.halo){box-shadow:none!important;}
+
+@keyframes pulseR{0%,100%{opacity:1;}50%{opacity:0.8;}}
+
+.sep{background:rgba(0,0,0,0.12);height:100%;width:100%;border-radius:2px;}
+
+/* ── CARTE ── */
+.carte{background:var(--blanc);border-radius:var(--r);overflow:hidden;box-shadow:0 6px 28px var(--ombre);margin-bottom:14px;}
+.hd-r{background:linear-gradient(135deg,var(--rouge-f),var(--rouge));padding:16px 20px;color:#fff;position:relative;}
+.hd-v{background:linear-gradient(135deg,#155724,var(--vert));padding:16px 20px;color:#fff;position:relative;}
+.hd-badge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:2px;padding:3px 11px;margin-bottom:7px;text-transform:uppercase;}
+.hd-nom{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:700;line-height:1.2;}
+.hd-sub{font-size:0.88rem;opacity:0.88;margin-top:3px;font-style:italic;}
+.hd-ico{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:2.8rem;opacity:0.22;}
+.badge-libre{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.5);border-radius:20px;color:#fff;font-size:0.72rem;font-weight:700;padding:2px 10px;margin-left:6px;letter-spacing:1px;vertical-align:middle;}
+
+.corps{padding:18px 20px;}
+.consigne{background:#FFF8E1;border-left:4px solid var(--or);border-radius:0 var(--rs) var(--rs) 0;padding:12px 14px;font-size:1rem;color:#5D4037;margin-bottom:18px;line-height:1.5;}
+.consigne strong{display:block;font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#8D6E63;margin-bottom:5px;}
+
+.q-titre{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--rouge-f);margin-bottom:14px;}
+.q-bloc{background:var(--gris-cl);border-radius:var(--rs);padding:14px;margin-bottom:12px;}
+.q-txt{font-weight:700;font-size:1rem;color:var(--texte);margin-bottom:10px;line-height:1.45;}
+.q-num{display:inline-flex;align-items:center;justify-content:center;background:var(--rouge);color:#fff;border-radius:50%;width:24px;height:24px;font-size:0.82rem;font-weight:700;margin-right:7px;flex-shrink:0;vertical-align:middle;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opt{display:flex;align-items:flex-start;gap:10px;background:var(--blanc);border:2px solid #E0E0E0;border-radius:var(--rs);padding:11px 13px;cursor:pointer;font-size:0.97rem;color:var(--texte);line-height:1.4;min-height:46px;}
+.opt:active{transform:scale(0.98);}
+.opt.sel{border-color:var(--rouge);background:var(--rouge-p);}
+.radio{width:22px;height:22px;border-radius:50%;border:2px solid #ccc;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;}
+.opt.sel .radio{background:var(--rouge);border-color:var(--rouge);}
+.opt.sel .radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;}
+
+.btn-val{width:100%;background:linear-gradient(135deg,var(--rouge-f),var(--rouge));color:#fff;border:none;border-radius:var(--rs);padding:15px;font-family:'Lato',sans-serif;font-size:1.08rem;font-weight:700;cursor:pointer;margin-top:8px;letter-spacing:1px;box-shadow:0 4px 12px rgba(192,57,43,0.4);}
+.btn-val:active{transform:scale(0.98);}
+.err{background:#FDECEA;border:2px solid #E57373;border-radius:var(--rs);padding:13px;color:#B71C1C;font-weight:700;text-align:center;font-size:0.93rem;margin-top:10px;display:none;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}60%{transform:translateX(6px)}}
+
+.succes{background:var(--vert-p);border:2px solid var(--vert);border-radius:var(--rs);padding:16px;margin-top:10px;display:none;}
+.succes-t{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--vert);margin-bottom:10px;}
+.indice{background:#fff;border-radius:var(--rs);padding:14px;margin-top:8px;font-size:1rem;line-height:1.6;color:var(--texte);border:1px solid #C8E6C9;}
+.indice-l{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--vert);margin-bottom:7px;}
+.coords{background:var(--gris-cl);border-radius:var(--rs);padding:11px 15px;margin-top:9px;font-family:monospace;font-size:1rem;color:var(--gris-f);text-align:center;letter-spacing:1px;}
+.coords-note{text-align:center;font-size:0.75rem;color:var(--gris-m);margin-top:5px;}.coords-note em{font-style:italic;}
+.btn-nav{width:100%;background:linear-gradient(135deg,#155724,var(--vert));color:#fff;border:none;border-radius:var(--rs);padding:15px;font-family:'Lato',sans-serif;font-size:1.08rem;font-weight:700;cursor:pointer;margin-top:12px;letter-spacing:1px;box-shadow:0 4px 12px rgba(30,132,73,0.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-nav:active{transform:scale(0.98);}
+.btn-nav svg{width:22px;height:22px;fill:currentColor;flex-shrink:0;}
+
+/* Carte validée : juste l'indice, pas de toggle */
+.valide-corps{padding:16px 20px;}
+
+.felicitations{text-align:center;background:var(--blanc);border-radius:var(--r);padding:36px 24px;box-shadow:0 6px 28px var(--ombre);}
+.felicitations h2{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--or);margin-bottom:10px;}
+.felicitations p{font-size:1.05rem;color:var(--gris-m);line-height:1.65;}
+.confetti{font-size:2.5rem;display:block;margin-bottom:14px;animation:bounce 1s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+</style>
+</head>
+<body>
+<header>
+  <div style="position:relative;">
+    <h1>🥂 L'Apéro</h1>
+    <div class="badge-equipe">⬤ ÉQUIPE ROUGE</div>
+    <button onclick="raz()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);color:#fff;font-family:'Lato',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:1px;padding:5px 10px;border-radius:8px;cursor:pointer;">RAZ</button>
+  </div>
+</header>
+<div class="container" id="app"></div>
+<script>
+// ================================================================
+// CONFIG
+// ================================================================
+const EQUIPE = "ROUGE";
+const ORDRE  = ["A","B","C","D","E","F"];
+const LIBRES = ["G"];
+const AFF    = {A:"P", B:"N", C:"E", D:"F", E:"A", F:"G", G:"R"};
+
+// ================================================================
+// DONNÉES
+// ================================================================
+const PTS = {
+  A:{sport:"La Pétanque",emoji:"🎯",lat:44.70911550894786,lng:2.6406847508930964,
+    indice:"Dans la niche, récupérer UNIQUEMENT la fiche de votre couleur.",
+    q:[
+      {t:"Combien de boules chaque joueur tient-il en main lors d'un tête-à-tête ?",o:["2 boules","3 boules","4 boules","6 boules"],r:1},
+      {t:"Comment s'appelle la petite boule cible à la pétanque ?",o:["La cible","Le marqueur","Le bouchon","Le cochonnet"],r:3},
+      {t:"Quelle est la distance minimale entre le cochonnet et le cercle de lancer ?",o:["10 mètres","8 mètres","6 mètres","4 mètres"],r:2},
+      {t:"À la pétanque, comment s'appelle le tir qui déplace la boule adverse tout en prenant exactement sa place ?",o:["Pointer","Tirer","Faire un carreau","Lober"],r:2},
+      {t:"Dans quelle ville est né le jeu de pétanque moderne au début du XX° siècle ?",o:["La Ciotat","Marseille","Toulon","Montpellier"],r:0}
+    ]},
+  B:{sport:"La Natation",emoji:"🏊",lat:44.708527,lng:2.636088,
+    indice:"La fontaine de Saurel est en fait un lavoir. Sous le rebord horizontal du lavoir, récupérer UNIQUEMENT la fiche de votre couleur.",
+    q:[
+      {t:"Combien de nages officielles reconnaît la Fédération Internationale de Natation ?",o:["2","3","4","5"],r:2},
+      {t:"Quelle longueur fait un bassin olympique de natation ?",o:["50 mètres","25 mètres","33 mètres","100 mètres"],r:0},
+      {t:"Quel nageur américain détient le record absolu de médailles olympiques ?",o:["Ryan Lochte","Mark Spitz","Michael Phelps","Matt Biondi"],r:2},
+      {t:"Dans quelle(s) nage(s) les nageurs touchent-ils le mur des deux mains à l'arrivée ?",o:["Le papillon uniquement","Le crawl","Le dos","La brasse et le papillon"],r:3},
+      {t:"Comment s'appelle le mouvement des jambes en crawl ?",o:["Le ciseau","Le battement de jambes","La grenouille","Le coup de pied dauphin"],r:1}
+    ]},
+  C:{sport:"L'Escalade",emoji:"🧗",lat:44.711407,lng:2.638481,
+    indice:"\"Fromentie\" fait référence à l'artisan qui travaillait le froment et réalisait la farine de blé. Dans une anfractuosité du mur, récupérer UNIQUEMENT la fiche de votre couleur.",
+    q:[
+      {t:"À quels JO l'escalade a-t-elle fait son apparition en compétition officielle ?",o:["Rio 2016","Londres 2012","Paris 2024","Tokyo 2020"],r:3},
+      {t:"Comment appelle-t-on la poudre blanche pour améliorer l'adhérence des mains ?",o:["Magnésie","Résine","Talc","Craie grasse"],r:0},
+      {t:"Qu'est-ce que le « bloc » en escalade ?",o:["Un nœud de sécurité","Un type de prise en dévers","Une voie sur grande paroi avec corde","L'escalade de courtes voies sans corde ni harnais"],r:3},
+      {t:"Quelle grimpeuse française a atteint la finale du combiné d'escalade aux JO de Tokyo 2020 ?",o:["Fanny Gibert","Julia Chanourdie","Anouck Jaubert","Janja Garnbret"],r:2},
+      {t:"Comment s'appelle la technique consistant à grimper uniquement avec les bras ?",o:["Le dyno","Le dülfer","Le campusing","Le statique"],r:2}
+    ]},
+  D:{sport:"Le Football",emoji:"⚽",lat:44.712102,lng:2.642513,
+    indice:"Bernard Milhau a légué 14 millions d'euros à la commune lors de son décès, contre le fleurissement de cette sépulture. Ressortir du cimetière, et, derrière le bac à fleur au pied du panneau de limitation de vitesse, récupérer UNIQUEMENT la fiche de votre couleur.",
+    q:[
+      {t:"Combien de joueurs composent une équipe sur le terrain (gardien inclus) ?",o:["11","10","9","12"],r:0},
+      {t:"Quelle équipe a remporté la Coupe du Monde 2018 ?",o:["Brésil","Argentine","Allemagne","France"],r:3},
+      {t:"Quel joueur détient le record de buts en Coupe du Monde FIFA ?",o:["Pelé","Ronaldo (Brésil)","Miroslav Klose","Lionel Messi"],r:2},
+      {t:"Combien de temps dure un match réglementaire (hors prolongations) ?",o:["80 minutes","90 minutes","100 minutes","120 minutes"],r:1},
+      {t:"Quelle faute entraîne un penalty dans la surface de réparation ?",o:["Un hors-jeu dans la surface","Une faute d'un défenseur sur un attaquant dans la surface","Un tacle hors surface","Un carton rouge du gardien"],r:1}
+    ]},
+  E:{sport:"Tir à l'Arc",emoji:"🏹",lat:44.710016,lng:2.639194,
+    indice:"La tour du château date de 1828. À son pied, derrière la plaque, récupérer UNIQUEMENT la fiche de votre couleur.",
+    q:[
+      {t:"À quelle distance les archers tirent-ils en compétition olympique individuelle ?",o:["18 mètres","50 mètres","70 mètres","90 mètres"],r:2},
+      {t:"Combien de zones de score compte une cible officielle de tir à l'arc ?",o:["5","8","10","12"],r:2},
+      {t:"Comment s'appelle la pièce qui maintient la flèche sur la corde de l'arc ?",o:["L'encoche","La plume","Le repose-flèche","L'empennage"],r:0},
+      {t:"Quelle nation a remporté le plus de médailles en tir à l'arc aux JO ?",o:["États-Unis","Corée du Sud","France","Chine"],r:1},
+      {t:"Quel type d'arc est utilisé aux JO pour le tir individuel et par équipes ?",o:["Arc classique (recurve)","Arc à poulies (compound)","Arc nu (bare bow)","Arc longbow"],r:0}
+    ]},
+  F:{sport:"Le Golf",emoji:"⛳",lat:44.708456,lng:2.637502,
+    indice:"De nombreuses petites ruelles parcourent Montézic. Sous le petit regard pluvial, récupérer UNIQUEMENT la fiche de votre couleur.",
+    q:[
+      {t:"Combien de trous comporte un parcours de golf standard ?",o:["9 trous","36 trous","18 trous","24 trous"],r:2},
+      {t:"Comment appelle-t-on un score de 2 coups sous le par sur un trou ?",o:["Bogey","Albatros","Birdie","Eagle"],r:3},
+      {t:"Comment appelle-t-on un score d'un coup sous le par sur un trou ?",o:["Birdie","Bogey","Eagle","Albatros"],r:0},
+      {t:"Que désigne le terme « par » au golf ?",o:["La limite de coups par trou","Le score du leader","Le score moyen des amateurs","Le nombre de coups théoriques pour terminer un trou"],r:3},
+      {t:"Comment appelle-t-on la zone de départ de chaque trou ?",o:["Le fairway","Le green","Le tee","Le rough"],r:2}
+    ]},
+  G:{sport:"La Randonnée",emoji:"🥾",lat:44.711654,lng:2.634968,
+    indice:"De ce superbe point de vue (prenez le temps !), redescendre et emprunter le petit sentier s'enfonçant dans la forêt, plein sud par rapport à la table d'orientation. Sur le chemin vous menant à Montézic, vous croiserez plusieurs sculptures en bois. Derrière le trône, que vous avez peut-être déjà vu en montant, récupérer UNIQUEMENT la fiche de votre couleur.",
+    q:[
+      {t:"En France, quel organisme est chargé du balisage des sentiers de Grande Randonnée (GR) ?",o:["Le Club Alpin Français","La Fédération Française de la Randonnée Pédestre","Le Ministère de l'Environnement","Les Parcs Naturels Régionaux"],r:1},
+      {t:"Quelle couleur de balisage est réservée aux sentiers de Grande Randonnée (GR) ?",o:["Jaune","Bleu et blanc","Rouge et blanc","Orange"],r:2},
+      {t:"Quel GR traverse les Pyrénées d'Hendaye à Banyuls-sur-Mer sur environ 900 km ?",o:["GR10","GR20","GR65","GR66"],r:0},
+      {t:"Selon la règle de Naismith, combien de temps faut-il ajouter par 600 mètres de dénivelé positif en randonnée ?",o:["1 heure","15 minutes","30 minutes","2 heures"],r:0},
+      {t:"Le « GR 65 » correspond à quel célèbre itinéraire de pèlerinage ?",o:["Chemin de Rocamadour","Compostelle via Turonensis","Compostelle via Tolosana","Chemin du Puy-en-Velay (via Podiensis)"],r:3}
+    ]}
+};
+
+// ================================================================
+// ÉTAT
+// ================================================================
+const CLE = "apero_ROUGE_v5";
+// Purge des anciennes clés
+["v1","v2","v3","v4"].forEach(v=>{
+  try{ localStorage.removeItem("apero_ROUGE_"+v); }catch(e){}
+});
+
+function etatVide(){ return {valides:[]}; }
+function charger(){
+  try{ const s=localStorage.getItem(CLE); if(s) return JSON.parse(s); }catch(e){}
+  return etatVide();
+}
+function sauver(st){ try{ localStorage.setItem(CLE,JSON.stringify(st)); }catch(e){} }
+
+function premierNonValide(st){
+  const p = ORDRE.find(l=>!st.valides.includes(l));
+  return p !== undefined ? p : LIBRES[0];
+}
+
+let ST = charger();
+let repCours = {};
+
+// pointAffiche : lettre interne. Écrit uniquement par afficherPoint() et apresValidation().
+// JAMAIS modifié dans render().
+let pointAffiche = premierNonValide(ST);
+
+// ================================================================
+// NAVIGATION — directe, sans modal
+// ================================================================
+function allerA(lat, lng){
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const url = ios
+    ? "maps://maps.apple.com/?daddr="+lat+","+lng+"&dirflg=w"
+    : "https://www.google.com/maps/dir/?api=1&destination="+lat+","+lng+"&travelmode=walking";
+  window.open(url, "_blank");
+}
+
+// ================================================================
+// RENDU
+// ================================================================
+function render(){
+  const app   = document.getElementById("app");
+  const total = ORDRE.length + LIBRES.length;
+  const fait  = ST.valides.length;
+
+  // ── Pastilles (grille fixe, pas de flex-wrap) ────────────────
+  let ph = "";
+  ORDRE.forEach((p,i)=>{
+    const valide     = ST.valides.includes(p);
+    const estProchain = (i === ORDRE.findIndex(l=>!ST.valides.includes(l)));
+    let cls = "past";
+    if(valide)          cls += " fait";
+    else if(estProchain) cls += " actif";
+    // halo UNIQUEMENT sur pointAffiche
+    if(p === pointAffiche) cls += " halo";
+    const cliq = valide || estProchain;
+    const ev   = cliq ? ' onclick="afficherPoint(\''+p+'\')"' : '';
+    ph += '<div class="'+cls+'"'+ev+'>'+AFF[p]+'</div>';
+  });
+  ph += '<div class="sep"></div>';
+  LIBRES.forEach(p=>{
+    const valide = ST.valides.includes(p);
+    let cls = "past "+(valide?"libre-fait":"libre");
+    if(p === pointAffiche) cls += " halo";
+    ph += '<div class="'+cls+'" onclick="afficherPoint(\''+p+'\')">'+AFF[p]+'</div>';
+  });
+
+  let html = '<div class="card-prog">'
+    +'<div class="prog-head">'
+    +'<span class="prog-titre">Progression</span>'
+    +'<span class="prog-score">'+fait+' / '+total+'</span>'
+    +'</div>'
+    +'<div class="pastilles">'+ph+'</div>'
+    +'</div>';
+
+  // ── Fin du jeu ───────────────────────────────────────────────
+  if([...ORDRE,...LIBRES].every(p=>ST.valides.includes(p))){
+    html += '<div class="felicitations"><span class="confetti">🎉</span>'
+      +'<h2>Félicitations !</h2>'
+      +'<p>🗂️ Avez-vous pensé à récupérer les fiches de votre couleur à chacun des points ?<br><br>'
+      +'Si c\'est bon, rendez-vous au lieu de rassemblement pour une mise en commun, et surtout...<br><br>'
+      +'🥂 pour partager l\'apéritif !!!</p></div>';
+    app.innerHTML = html;
+    return;
+  }
+
+  // ── Carte unique : pointAffiche ──────────────────────────────
+  const pt    = PTS[pointAffiche];
+  const aff   = AFF[pointAffiche];
+  const lib   = LIBRES.includes(pointAffiche);
+  const val   = ST.valides.includes(pointAffiche);
+  const badge = (lib ? 'Point libre<span class="badge-libre">LIBRE</span>' : 'Point '+aff);
+
+  if(val){
+    // Carte verte : juste le succès (indice + coords + bouton nav)
+    // Pas de questions, pas de toggle
+    html += '<div class="carte" id="card-'+pointAffiche+'">'
+      +'<div class="hd-v">'
+      +'<span class="hd-badge">'+badge+'</span>'
+      +'<div class="hd-nom">'+pt.emoji+' '+pt.sport+'</div>'
+      +'<div class="hd-sub">✅ Point validé !</div>'
+      +'</div>'
+      +'<div class="valide-corps">'
+      +'<div class="succes" style="display:block;margin-top:0">'
+      +'<div class="succes-t">📍 Indice pour trouver votre fiche</div>'
+      +'<div class="indice">'+pt.indice+'</div>'
+      +'<div class="coords">📌 '+pt.lat.toFixed(6)+', '+pt.lng.toFixed(6)+'</div>'
+      +'<div class="coords-note"><em>Coordonnées fiables à quelques mètres près</em> 😉</div>'
+      +'<button class="btn-nav" onclick="allerA('+pt.lat+','+pt.lng+')">'
+      +'<svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'
+      +'Y aller !</button>'
+      +'</div></div></div>';
+  } else {
+    // Carte rouge : QCM
+    let qh = "";
+    pt.q.forEach((q,qi)=>{
+      qh += '<div class="q-bloc"><div class="q-txt"><span class="q-num">'+(qi+1)+'</span>'+q.t+'</div><div class="opts">';
+      q.o.forEach((o,oi)=>{
+        const sel = (repCours[pointAffiche+"_"+qi]===oi)?" sel":"";
+        qh += '<div class="opt'+sel+'" onclick="choisir(\''+pointAffiche+'\','+qi+','+oi+')">'
+          +'<span class="radio"></span><span>'+o+'</span></div>';
+      });
+      qh += '</div></div>';
+    });
+
+    html += '<div class="carte" id="card-'+pointAffiche+'">'
+      +'<div class="hd-r">'
+      +'<span class="hd-badge">'+badge+'</span>'
+      +'<div class="hd-nom">'+pt.emoji+' '+pt.sport+'</div>'
+      +'<div class="hd-sub">Répondez aux 5 questions pour obtenir les coordonnées</div>'
+      +'<div class="hd-ico">'+pt.emoji+'</div>'
+      +'</div>'
+      +'<div class="corps">'
+      +'<div class="consigne"><strong>🏆 Votre défi sport</strong>'
+      +'Répondez correctement aux 5 questions sur <strong>'+pt.sport+'</strong>.</div>'
+      +'<div class="q-titre">📝 Les 5 questions</div>'
+      +qh
+      +'<button class="btn-val" onclick="valider(\''+pointAffiche+'\')">✅ Valider mes réponses</button>'
+      +'<div class="err" id="err-'+pointAffiche+'">❌ Certaines réponses sont incorrectes. Cherchez encore !</div>'
+      // Panneau succès (caché jusqu'à validation)
+      +'<div class="succes" id="suc-'+pointAffiche+'">'
+      +'<div class="succes-t">🎉 Bravo, toutes les réponses sont correctes !</div>'
+      +'<div class="indice"><div class="indice-l">📍 Indice pour trouver votre fiche</div>'+pt.indice+'</div>'
+      +'<div class="coords">📌 '+pt.lat.toFixed(6)+', '+pt.lng.toFixed(6)+'</div>'
+      +'<div class="coords-note"><em>Coordonnées fiables à quelques mètres près</em> 😉</div>'
+      +'<button class="btn-nav" onclick="allerA('+pt.lat+','+pt.lng+')">'
+      +'<svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'
+      +'Y aller !</button></div>'
+      +'</div></div>';
+  }
+
+  app.innerHTML = html;
+}
+
+// ================================================================
+// INTERACTIONS
+// ================================================================
+function afficherPoint(lettre){
+  // Changer le point affiché — PAS de scroll
+  pointAffiche = lettre;
+  render();
+}
+
+function choisir(lettre, qi, oi){
+  repCours[lettre+"_"+qi] = oi;
+  // Mise à jour visuelle légère sans re-render
+  PTS[lettre].q[qi].o.forEach((_,optIdx)=>{
+    document.querySelectorAll('[onclick="choisir(\''+lettre+'\','+qi+','+optIdx+')"]')
+      .forEach(el=>{
+        if(optIdx===oi) el.classList.add("sel"); else el.classList.remove("sel");
+      });
+  });
+}
+
+function valider(lettre){
+  const pt = PTS[lettre];
+  let ok = true;
+  pt.q.forEach((q,qi)=>{
+    if(repCours[lettre+"_"+qi] !== q.r) ok = false;
+  });
+
+  const errEl = document.getElementById("err-"+lettre);
+  const sucEl = document.getElementById("suc-"+lettre);
+
+  if(!ok){
+    errEl.style.display = "block";
+    errEl.style.animation = "none";
+    void errEl.offsetHeight;
+    errEl.style.animation = "shake 0.4s";
+    return;
+  }
+
+  // ✅ Succès : montrer panneau, cacher QCM
+  errEl.style.display = "none";
+  sucEl.style.display = "block";
+  const corps = document.querySelector("#card-"+lettre+" .corps");
+  if(corps){
+    corps.querySelectorAll(".consigne,.q-titre,.q-bloc,.btn-val,.err")
+      .forEach(el=>{ el.style.display="none"; });
+  }
+
+  if(!ST.valides.includes(lettre)){
+    ST.valides.push(lettre);
+    sauver(ST);
+    // Mettre à jour les pastilles immédiatement (vert sur validé, rouge sur suivant)
+    render();
+  }
+}
+
+// ================================================================
+// RAZ
+// ================================================================
+function raz(){
+  if(confirm("⚠️ Remettre le jeu à zéro ?\nToute la progression sera effacée.")){
+    try{ localStorage.removeItem(CLE); }catch(e){}
+    ST = etatVide();
+    repCours = {};
+    pointAffiche = premierNonValide(ST);
+    render();
+  }
+}
+
+// ================================================================
+// DÉMARRAGE
+// ================================================================
+render();
+</script>
+</body>
+</html>
