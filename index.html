@@ -7,18 +7,18 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>L'Apéro – Équipe ROUGE [build-30]</title>
+<title>L'Apéro – Équipe MARRON [build-30]</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --rouge:#C0392B;--rouge-f:#922B21;--rouge-cl:#F5B7B1;--rouge-p:#FDEDEC;
+  --rouge:#7D3C0A;--rouge-f:#4A1F00;--rouge-cl:#D4A574;--rouge-p:#F5E6D3;
   --or:#D4AC0D;--vert:#1E8449;--vert-p:#EAFAF1;
   --gris-f:#2C3E50;--gris-m:#566573;--gris-cl:#F2F3F4;
   --blanc:#FFF;--texte:#1A1A2E;--ombre:rgba(0,0,0,0.15);
   --r:16px;--rs:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Lato',sans-serif;background:linear-gradient(160deg,#1A1A2E 0%,#922B21 60%,#C0392B 100%);min-height:100vh;color:var(--texte);}
+body{font-family:'Lato',sans-serif;background:linear-gradient(160deg,#1A1A2E 0%,#4A1F00 60%,#7D3C0A 100%);min-height:100vh;color:var(--texte);}
 
 header{background:rgba(0,0,0,0.45);padding:16px 20px 12px;text-align:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);border-bottom:2px solid rgba(212,172,13,0.5);}
 header h1{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;color:var(--or);letter-spacing:3px;text-shadow:2px 2px 8px rgba(0,0,0,0.5);line-height:1;}
@@ -117,7 +117,7 @@ header h1{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;
 <header>
   <div style="position:relative;">
     <h1>🥂 L'Apéro</h1>
-    <div class="badge-equipe">⬤ ÉQUIPE ROUGE</div>
+    <div class="badge-equipe">⬤ ÉQUIPE MARRON</div>
     <button onclick="raz()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);color:#fff;font-family:'Lato',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:1px;padding:5px 10px;border-radius:8px;cursor:pointer;">RAZ</button>
   </div>
 </header>
@@ -126,8 +126,8 @@ header h1{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;
 // ================================================================
 // CONFIG
 // ================================================================
-const EQUIPE = "ROUGE";
-const ORDRE  = ["A","B","C","D","E","F"];
+const EQUIPE = "MARRON";
+const ORDRE  = ["F","A","B","C","D","E"];
 const LIBRES = ["G"];
 const AFF    = {A:"P", B:"N", C:"E", D:"F", E:"A", F:"G", G:"R"};
 
@@ -203,10 +203,10 @@ const PTS = {
 // ================================================================
 // ÉTAT
 // ================================================================
-const CLE = "apero_ROUGE_v5";
+const CLE = "apero_MARRON_v5";
 // Purge des anciennes clés
 ["v1","v2","v3","v4"].forEach(v=>{
-  try{ localStorage.removeItem("apero_ROUGE_"+v); }catch(e){}
+  try{ localStorage.removeItem("apero_MARRON_"+v); }catch(e){}
 });
 
 function etatVide(){ return {valides:[]}; }
